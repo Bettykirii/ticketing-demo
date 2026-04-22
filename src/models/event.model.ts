@@ -24,7 +24,7 @@
 
 
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../src/config/database";
+import sequelize from "../config/database";
 
 
 class Event extends Model {}

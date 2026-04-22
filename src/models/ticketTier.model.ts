@@ -1,5 +1,7 @@
 import { DataTypes,Model } from "sequelize";
-import sequelize from "../src/config/database";
+import sequelize from "../config/database";
+
+import Event from "./event.model";
 
   class TicketTier extends Model {}
 
@@ -12,6 +14,10 @@ import sequelize from "../src/config/database";
     eventId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: Event,
+            key: 'id',
+        },
     },
     tierNumber: {
         type: DataTypes.INTEGER,
@@ -28,10 +34,12 @@ import sequelize from "../src/config/database";
     soldCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
     },
     status: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: "upcoming",
     },
   },
   {
@@ -39,5 +47,17 @@ import sequelize from "../src/config/database";
     modelName: 'TicketTier',
     tableName: 'ticket_tiers',
     timestamps: true,
+    indexes: [
+        {
+            unique: true,
+            fields: ['eventId', 'tierNumber'],
+        },
+
+        {
+            fields: [  'eventId', 'status']
+        },
+
+        
+    ],
   })
   export default TicketTier;

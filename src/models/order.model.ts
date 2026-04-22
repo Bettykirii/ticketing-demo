@@ -1,7 +1,9 @@
 
 
   import { DataTypes,Model } from "sequelize";
-  import sequelize from "../src/config/database";
+  import sequelize from "../config/database";
+  import Event from "./event.model";
+import TicketTier from "./ticketTier.model";
 
   class Order extends Model {}
 
@@ -14,10 +16,18 @@
     eventId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: Event,
+            key: 'id',
+        },
     },
     ticketTierId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: TicketTier,
+            key: 'id',
+        },
     },
     buyerName: {
         type: DataTypes.STRING,
@@ -26,22 +36,28 @@
     buyerEmail: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+            isEmail: true,
+        },
     },
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 1,
     },
     totalAmount: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
     },
     status: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: "pending",
     },
     paymentStatus: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: "pending",
     },
   },
   {
@@ -49,5 +65,19 @@
     modelName: 'Order',
     tableName: 'orders',
     timestamps: true,
+
+    indexes: [
+        {
+            fields: [ 'eventId']
+        },
+        {
+            fields: [ 'ticketTierId'],
+        },
+        {
+            fields: [ 'buyerEmail' ],
+        },
+    ]
   }
 )
+
+export default Order;
