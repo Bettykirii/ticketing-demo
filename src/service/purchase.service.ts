@@ -1,6 +1,8 @@
 import Event from "../models/event.model";
 import TicketTier from "../models/ticketTier.model";
 import Order from "../models/order.model";
+import sequelize from "../config/database";
+
 
 
 export async  function purchaseTickets(
@@ -11,7 +13,10 @@ export async  function purchaseTickets(
   
 
 ){
-    const event  = await Event.findByPk(eventId);
+    const transaction = await sequelize.transaction();
+
+    try {
+    const event  = await Event.findByPk(eventId, { transaction });
     if (!event){
         throw new Error("Event not found");
     }
@@ -46,9 +51,18 @@ export async  function purchaseTickets(
         buyerName,
         buyerEmail,
         totalAmount,
-    });
-    activeTier.soldCount += qty;
-    await activeTier.save();
+    }, { transaction }
+);
+
     
+    activeTier.soldCount += qty;
+    await activeTier.save( { transaction });
+    await transaction.commit();
+}
+
+catch (error) {
+    await transaction.rollback();
+    throw error;
+}
 
 }
