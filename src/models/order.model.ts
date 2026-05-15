@@ -50,10 +50,11 @@ import TicketTier from "./ticketTier.model";
         allowNull: false,
     },
     status: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "pending",
-    },
+
+    type: DataTypes.ENUM('pending', 'paid', 'failed'),
+    allowNull: false,
+    defaultValue: 'pending',
+  },
     paymentStatus: {
         type: DataTypes.STRING,
         allowNull: false,

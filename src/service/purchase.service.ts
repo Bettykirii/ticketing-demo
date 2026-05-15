@@ -58,6 +58,11 @@ export async  function purchaseTickets(
     activeTier.soldCount += qty;
     await activeTier.save( { transaction });
     await transaction.commit();
+
+    return {
+        message: "Tickets purchased succesfully",
+        Order,
+    };
 }
 
 catch (error) {
